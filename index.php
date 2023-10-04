@@ -7,7 +7,7 @@ if (!empty($_SESSION['correo'])) {
   if (!empty($_POST)) {
     $alert = '';
     if (empty($_POST['correo']) || empty($_POST['clave'])) {
-      $alert = '<div class="alert alert-danger" role="alert">
+      $alert = '<div class="alert alert-danger py-2" role="alert">
             Ingrese su correo y su clave
             </div>';
     } else {
@@ -26,11 +26,12 @@ if (!empty($_SESSION['correo'])) {
         $_SESSION['usuario'] = $dato['nombre'];
         $_SESSION['cargo'] = $dato['cargo'];
         $_SESSION['rol'] = $dato['rol'];
+        $_SESSION['id_rol'] = $dato['id_rol'];
         $_SESSION['empresa'] = $dato['empresa'];
         $_SESSION['logo'] = $dato['logo'];
         header('location: view/panel.php');
       } else {
-        $alert = '<div class="alert alert-danger" role="alert">
+        $alert = '<div class="alert alert-danger py-2" role="alert">
                 Clave incorrecta
                 </div>';
         session_destroy();
@@ -70,16 +71,30 @@ if (!empty($_SESSION['correo'])) {
       height: 100%;
     }
   }
+  
+  .bg-title {
+    background: linear-gradient(to left, #439CEE, #1F78E9);
+  }
+  .bg-red-gradient {
+    background: linear-gradient(to left, #F44335, #D63B2F);
+  }
+  .bg-green-gradient {
+    background: linear-gradient(to left, #2CB939, #188A1C);
+  }
+  .bg-deep {
+    background: linear-gradient(to left, skyblue, #1F78E9);
+  }
+</style
 </style>
 
 <body>
-  <section class="vh-100">
-    <div class="container-fluid h-custom">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-md-9 col-lg-6 col-xl-5">
+  <section class="vh-100 bg-deep d-flex flex-column">
+    <div class="container-fluid h-100 ">
+      <div class="row d-flex justify-content-center align-items-center h-100 mx-4">
+        <div class="col-md-9 col-lg-6 col-xl-5 d-lg-flex d-none">
           <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image">
         </div>
-        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 bg-secondary-subtle p-4 rounded">
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 bg-white border shadow-sm p-4 rounded">
           <form action="" method="POST">
             <h3 class="text-center">Inicior Sesion</h3>
             <?php echo isset($alert) ? $alert : ''; ?>
@@ -107,17 +122,17 @@ if (!empty($_SESSION['correo'])) {
             </div>
 
             <div class="text-center w text-lg-start mt-4 pt-2">
-              <button type="submit" class="btn btn-primary w-100">Iniciar Sesion</button>
+              <button type="submit" class="btn text-white font-semibold me-2 bg-title w-100">Iniciar Sesion</button>
             </div>
             <div class="text-center w text-lg-start pt-2">
-              <a href="consulta.php" class="btn btn-success w-100">Consultar expediente</a>
+              <a href="consulta.php" class="btn text-white font-semibold bg-green-gradient w-100">Consultar expediente</a>
             </div>
 
           </form>
         </div>
       </div>
     </div>
-    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-dark">
+    <div class="d-flex m-2 flex-column flex-md-row rounded text-center text-md-start justify-content-between py-3 px-4 px-xl-5 bg-dark">
       <!-- Copyright -->
       <div class="text-white mb-3 mb-md-0">
         Copyright © <?= date('Y') ?>. Reservados todos los derechos.

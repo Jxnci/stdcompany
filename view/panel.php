@@ -12,34 +12,32 @@ require("../controller/controller.php");
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>STD - <?= $_SESSION['empresa']; ?></title>
-  <link rel="shortcut icon" href="../images/<?= $_SESSION['logo']; ?>" type="image/x-icon">
+  <!-- <link rel="shortcut icon" href="../images/<?= $_SESSION['logo']; ?>" type="image/x-icon"> -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <!-- Libreria notificaciones -->
   <link ref="stylesheet" type="text/css" href="../dist/snackbar.min.css">
   <!-- Libreria para datatables -->
   <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/r-2.5.0/datatables.min.css" rel="stylesheet">
-
+  <!-- Estilos Personalizados -->
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 
-
-<body class=" m-2 border-end border-start">
-  <nav class="navbar navbar-expand-lg bg-dark  rounded-top-2">
+<body class="m-4 mt-3 bg-deep">
+  <nav class="navbar navbar-expand-lg bg-title rounded">
     <?php
     include('component/navbar.php');
     ?>
   </nav>
-  <div class="container-fluid mt-4">
-    <div class="border bg-body-secondary rounded px-3 py-2 mb-4 d-flex justify-content-between">
-      <div>
-        <span class="fw-bolder "><?= $_SESSION['usuario']; ?></span>
-        <span class="blockquote-footer"><?= $_SESSION['correo']; ?></span>
-      </div>
-      <p class="card-text"><?= $_SESSION['cargo']; ?> | <?= $_SESSION['rol']; ?></p>
+  <div class="border bg-white shadow-sm rounded px-3 py-2 my-2 d-flex justify-content-between">
+    <div>
+      <span class="fw-bolder "><?= $_SESSION['usuario']; ?></span>
+      <span class="blockquote-footer"><?= $_SESSION['correo']; ?></span>
     </div>
+    <p class="card-text"><?= $_SESSION['cargo']; ?> | <?= $_SESSION['rol']; ?></p>
   </div>
 
-  <main>
+  <main class="shadow-sm">
     <?php
     if (isset($_GET["ventana"])) {
       mostrarVentana($_GET["ventana"]);
@@ -61,7 +59,7 @@ require("../controller/controller.php");
 <!-- libreria para alertas -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <!-- Libreria JQuery -->
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <!-- Libreria para datatable -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>

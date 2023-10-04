@@ -1,11 +1,11 @@
 <?php
 if (isset($_GET['error'])) {
-  $alert = '<div class="alert alert-danger mx-4" role="alert">
+  $alert = '<div class="alert alert-danger py-2" role="alert">
               Todos los campos son obligatorios
             </div>';
 }
 if (isset($_GET['sindatos'])) {
-  $alert = '<div class="alert alert-danger mx-4" role="alert">
+  $alert = '<div class="alert alert-danger py-2" role="alert">
               No se encontraron datos
             </div>';
 }
@@ -20,6 +20,8 @@ if (isset($_GET['sindatos'])) {
   <title>STD - Consultar Expediente</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- Estilos Personalizados -->
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <style>
   .divider:after,
@@ -39,17 +41,21 @@ if (isset($_GET['sindatos'])) {
       height: 100%;
     }
   }
+
+  .bg-deep {
+    background: linear-gradient(to left, skyblue, #1F78E9);
+  }
 </style>
 
 <body>
-  <section class="vh-100">
-    <div class="container-fluid h-custom">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-md-9 col-lg-6 col-xl-5">
+  <section class="vh-100 bg-deep d-flex flex-column">
+    <div class="container-fluid h-100 ">
+      <div class="row d-flex justify-content-center align-items-center h-100 mx-4">
+        <div class="col-md-9 col-lg-6 col-xl-5 d-lg-flex d-none">
           <img src="images/consulta.png" class="img-fluid" alt="Sample image">
         </div>
-        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 bg-secondary-subtle p-4 rounded">
-          <form action="timeline.php" method="POST">
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 bg-white border shadow-sm p-4 rounded">
+          <form action="timeline.php" method="GET">
             <h3 class="text-center">Datos de seguimiento</h3>
             <?php echo isset($alert) ? $alert : ''; ?>
             <!-- Email input -->
@@ -64,15 +70,16 @@ if (isset($_GET['sindatos'])) {
               <input type="number" class="form-control" name="anio" placeholder="Año de seguimiento">
             </div>
 
-            <div class="text-center w text-lg-start mt-4 pt-2">
-              <button type="submit" class="btn btn-primary w-100">Consultar</button>
+            <div class="text-center d-flex text-lg-start mt-4 pt-2">
+              <button type="submit" class="btn text-white font-semibold me-2 bg-title w-100">Consultar</button>
+              <a href="index.php" class="btn text-white font-semibold bg-red-gradient w-100">Volver</a>
             </div>
 
           </form>
         </div>
       </div>
     </div>
-    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-dark">
+    <div class="d-flex m-2 flex-column flex-md-row rounded text-center text-md-start justify-content-between py-3 px-4 px-xl-5 bg-black">
       <!-- Copyright -->
       <div class="text-white mb-3 mb-md-0">
         Copyright © <?= date('Y') ?>. Reservados todos los derechos.

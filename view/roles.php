@@ -1,4 +1,4 @@
-<div class="mb-5 container-fluid">
+<div class="mb-3">
   <div class="card">
     <div class="card-header p-0 position-relative mt-n4 z-index-2">
       <div class="row g-0 my-2 me-2">

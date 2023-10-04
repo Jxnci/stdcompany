@@ -42,7 +42,7 @@ if (isset($_POST['btnActualizar'])) {
 ?>
 
 
-<div class="my-5 container-fluid">
+<div class="my-3">
   <div class="card">
     <div class="card-header p-0 position-relative mt-n4 z-index-2">
       <div class="bg-gradient-info shadow-info border-radius-lg pt-3 pb-2">

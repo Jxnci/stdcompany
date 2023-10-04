@@ -1,0 +1,56 @@
+body::-webkit-scrollbar {
+  width: 10px;
+  background: var(--bs-light);
+}
+body::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: var(--bs-primary);
+}
+.bg-title {
+  background: linear-gradient(to left, #439cee, #1f78e9);
+}
+
+.bg-black {
+  background: linear-gradient(to left, #414148, #1a1a1a);
+}
+
+.bg-deep {
+  background: #f8f9fa;
+}
+
+.bg-deep-gradient {
+  background: linear-gradient(to left, skyblue, #1f78e9);
+}
+
+.bg-red {
+  background: #f44335;
+}
+
+.bg-red-gradient {
+  background: linear-gradient(to left, #f44335, #d63b2f);
+}
+
+.bg-blue {
+  background: #1a73e8;
+}
+.bg-blue-gradient {
+  background: linear-gradient(to left, #439cee, #1f78e9);
+  color: white;
+  font-weight: 500;
+}
+.bg-blue-gradient:hover {
+  background: linear-gradient(to left, #4997e0, #1c6cd5);
+  color: white;
+}
+
+.bg-green {
+  background: #1a73e8;
+}
+
+.bg-green-gradient {
+  background: linear-gradient(to left, #2cb939, #188a1c);
+}
+
+.bg-green-gradient-icon {
+  background: linear-gradient(to bottom, #56ce0e, #4caf50);
+}

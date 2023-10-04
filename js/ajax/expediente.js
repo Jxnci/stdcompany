@@ -1,42 +1,70 @@
 // Read
-function cargarDetalleMesas() {
-  let rol = $("#rol").val();
+function cargarExpedientes() {
   $.ajax({
     type: "POST",
     url: "../model/Mexpediente.php",
     data: {
       dataexpediente: 1,
-      rol: rol,
     },
     dataType: "html",
     success: function (response) {
       let datos = JSON.parse(response);
       let contenido = "";
       let estado = "";
+      let acciones = "";
+      let editar = "";
+      let mover = "";
+      let ver = "";
       datos.forEach((dato) => {
+        var fecha = new Date(dato.fec);
+        var anio = fecha.getFullYear();
         if (dato.est == 1) {
-          estado = `<span class="badge text-bg-warning">Registrado</span>`;
+          estado = `<span class="badge px-2 py-1  text-bg-success">Registrado</span>`;
+          editar = `
+          <a onclick="modalMovimiento('${dato.id}')" class="badge bg-success">
+            <i class="fas fa-share-from-square p-1"></i></a>
+          <a href="../timeline.php?nexpediente=${dato.num}&anio=${anio}" target="_blank" class="badge bg-secondary">
+            <i class="fas fa-eye p-1"></i></a>`;
+          mover = `<a onclick="obtenerExpedienteId('${dato.id}')" class="badge bg-warning">
+          <i class="fas fa-edit p-1"></i></a>`;
+          ver = `<a onclick="eliminarExpediente('${dato.id}')" class="badge bg-danger me-1">
+          <i class="fas fa-trash-alt p-1"></i>`;
+        } else {
+          ver = `<a onclick="" class="badge bg-danger opacity-50 me-1">
+          <i class="fas fa-trash-alt p-1"></i>`;
+          mover = `<a onclick="" class="badge bg-warning opacity-50">
+          <i class="fas fa-edit p-1"></i></a>`;
+          editar = `
+          <a onclick="" class="badge bg-success opacity-50">
+            <i class="fas fa-share-from-square p-1"></i></a>
+          <a href="../timeline.php?nexpediente=${dato.num}&anio=${anio}" target="_blank" class="badge bg-secondary">
+            <i class="fas fa-eye p-1"></i></a>`;
         }
         if (dato.est == 2) {
-          estado = `<span class="badge text-bg-success">Enviado</span>`;
+          estado = `<span class="badge px-2 py-1  text-bg-secondary">Enviado</span>`;
         }
         if (dato.est == 3) {
-          estado = `<span class="badge text-bg-danger">Finalizado</span>`;
+          estado = `<span class="badge px-2 py-1  text-bg-danger">Finalizado</span>`;
         }
+
+        if (dato.id_rol == 3) {
+          acciones = ver + mover + editar;
+        }
+
+        if (dato.id_rol == 2) {
+          acciones = editar;
+        }
+        if (dato.id_rol == 1) {
+          acciones = mover + editar;
+        }
+
         contenido += `<tr>
         <td>${dato.id}</td>
         <td>${dato.num}</td>
         <td>${dato.asu}</td>
         <td>${dato.fec}</td>
         <td>${estado}</td>
-        <td>
-        <a onclick="eliminarMesa('${dato.id}')" class="badge bg-danger">
-          <i class="fas fa-trash-alt p-1"></i></a>
-        <a onclick="obtenerMesaId('${dato.id}')" class="badge bg-warning">
-          <i class="fas fa-edit p-1"></i></a>
-        <a onclick="obtenerMesaId('${dato.id}')" class="badge bg-success">
-          <i class="fas fa-share-from-square p-1"></i></a>
-        </td>
+        <td>${acciones}</td>
       </tr>`;
       });
 
@@ -53,21 +81,61 @@ function cargarDetalleMesas() {
     },
   });
 }
-
 // Add
-function addMesa() {
-  let nomMesa = $("#nomMesa").val();
-  let cantidadMesa = $("#cantidadMesa").val();
-  let ambienteMesa = $("#ambienteMesa").val();
+function agregarExpediente() {
+  let camposVacios = [
+    $("#asunto"),
+    $("#cantidad_doc"),
+    $("#num_folios"),
+    $("#tramite"),
+    $("#doc_adjunto"),
+    $("#nombres"),
+    $("#apellidos"),
+    $("#dni"),
+    $("#correo"),
+    $("#celular"),
+  ];
+
+  for (let i = 0; i < camposVacios.length; i++) {
+    if (camposVacios[i].val().length < 1) {
+      SnackBar({
+        message: "El campo es requerido",
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+      camposVacios[i].focus();
+      return false;
+    }
+  }
+
+  let asunto = $("#asunto").val();
+  let cantidad_doc = $("#cantidad_doc").val();
+  let num_folios = $("#num_folios").val();
+  let tramite = $("#tramite").val();
+  let doc_adjunto = $("#doc_adjunto").val();
+  let nombres = $("#nombres").val();
+  let apellidos = $("#apellidos").val();
+  let dni = $("#dni").val();
+  let correo = $("#correo").val();
+  let celular = $("#celular").val();
   $.ajax({
     url: "../model/Mexpediente.php",
     type: "POST",
     dataType: "html",
     data: {
-      addmesa: 1,
-      nomMesa: nomMesa,
-      cantidadMesa: cantidadMesa,
-      ambienteMesa: ambienteMesa,
+      agregar: 1,
+      asunto: asunto,
+      cantidad_doc: cantidad_doc,
+      num_folios: num_folios,
+      tramite: tramite,
+      doc_adjunto: doc_adjunto,
+      nombres: nombres,
+      apellidos: apellidos,
+      dni: dni,
+      correo: correo,
+      celular: celular,
     },
     success: function (response) {
       SnackBar({
@@ -77,11 +145,19 @@ function addMesa() {
         status: "success",
         timeout: 4500,
       });
-      cargarDetalleMesas();
-      $("#nomMesa").val("");
-      $("#cantidadMesa").val("");
-      $("#campoActivo").removeClass("is-filled");
-      $("#campoActivo1").removeClass("is-filled");
+      cargarExpedientes();
+      $("#modalNuevo").modal("hide");
+
+      $("#asunto").val("");
+      $("#cantidad_doc").val("");
+      $("#num_folios").val("");
+      $("#tramite").val("");
+      $("#doc_adjunto").val("");
+      $("#nombres").val("");
+      $("#apellidos").val("");
+      $("#dni").val("");
+      $("#correo").val("");
+      $("#celular").val("");
     },
     error: function () {
       SnackBar({
@@ -95,11 +171,11 @@ function addMesa() {
   });
 }
 
-//Delete
-function eliminarMesa(id) {
+// Delete
+function eliminarExpediente(id) {
   swal({
-    title: "Se inhabilitara la mesa",
-    text: "No se podra realizar acciones",
+    title: "Se eliminara el expediente",
+    text: "Accion no reversible",
     icon: "warning",
     buttons: true,
     dangerMode: true,
@@ -109,8 +185,8 @@ function eliminarMesa(id) {
         type: "POST",
         url: "../model/Mexpediente.php",
         data: {
-          eliminarmesa: 0,
-          ideliminarmesa: id,
+          eliminar: 1,
+          id: id,
         },
         dataType: "html",
         success: function (response) {
@@ -121,7 +197,7 @@ function eliminarMesa(id) {
             status: "success",
             timeout: 4500,
           });
-          cargarDetalleMesas();
+          cargarExpedientes();
         },
         error: function (X) {
           SnackBar({
@@ -137,79 +213,39 @@ function eliminarMesa(id) {
   });
 }
 
-// habilitar
-function habilitarMesa(id) {
-  swal({
-    title: "Se habilitara la mesa",
-    icon: "warning",
-    buttons: true,
-    dangerMode: true,
-  }).then((willDelete) => {
-    if (willDelete) {
-      $.ajax({
-        type: "POST",
-        url: "../model/Mexpediente.php",
-        data: {
-          habilitarmesa: 0,
-          idhabilitarmesa: id,
-        },
-        dataType: "html",
-        success: function (response) {
-          SnackBar({
-            message: response,
-            position: "tr",
-            fixed: true,
-            status: "success",
-            timeout: 4500,
-          });
-          cargarDetalleMesas();
-        },
-        error: function (X) {
-          SnackBar({
-            message: "No se puede habilitar",
-            position: "tr",
-            fixed: true,
-            status: "danger",
-            timeout: 4500,
-          });
-        },
-      });
-    }
-  });
-}
-
-//Edit
-function editarMesa() {
-  let pe = document.getElementById("adisponible");
-  let am = document.getElementById("amante");
-  let cambioDis = "n";
-  if (pe) {
-    if (pe.checked == true) {
-      cambioDis = "1";
-    }
-  }
-  if (am) {
-    if (am.checked == true) {
-      cambioDis = "4";
-    }
-  }
-  let ime = $("#ideditarmesa").val();
-  let nome = $("#enomMesa").val();
-  let dime = cambioDis;
-  let came = $("#ecantidadMesa").val();
-  let amme = $("#eambienteMesa").val();
+// Edit
+function editarExpediente() {
+  let id = $("#id").val();
+  let asunto = $("#asunto_edit").val();
+  let cantidad_doc = $("#cantidad_doc_edit").val();
+  let num_folios = $("#num_folios_edit").val();
+  let tramite = $("#tramite_edit").val();
+  let doc_adjunto = $("#doc_adjunto_edit").val();
+  let tramitante_id = $("#tramitante_id").val();
+  let nombres = $("#nombres_edit").val();
+  let apellidos = $("#apellidos_edit").val();
+  let dni = $("#dni_edit").val();
+  let correo = $("#correo_edit").val();
+  let celular = $("#celular_edit").val();
 
   $.ajax({
     url: "../model/Mexpediente.php",
     type: "POST",
     dataType: "html",
     data: {
-      editmesa: 1,
-      ime: ime,
-      nome: nome,
-      dime: dime,
-      came: came,
-      amme: amme,
+      edit: 1,
+      id: id,
+      asunto: asunto,
+      cantidad_doc: cantidad_doc,
+      num_folios: num_folios,
+      tramite: tramite,
+      doc_adjunto: doc_adjunto,
+      tramitante_id: tramitante_id,
+      nombres: nombres,
+      apellidos: apellidos,
+      dni: dni,
+      correo: correo,
+      celular: celular,
     },
     success: function (response) {
       SnackBar({
@@ -219,11 +255,20 @@ function editarMesa() {
         status: "success",
         timeout: 4500,
       });
-      cargarDetalleMesas();
-      $("#ideditarmesa").val("");
-      $("#enomMesa").val("");
-      $("#ecantidadMesa").val("");
-      $("#editarMesa").modal("hide");
+      cargarExpedientes();
+      $("#id").val("");
+      $("#asunto_edit").val("");
+      $("#cantidad_doc_edit").val("");
+      $("#num_folios_edit").val("");
+      $("#tramite_edit").val("");
+      $("#doc_adjunto_edit").val("");
+      $("#tramitante_id").val("");
+      $("#nombres_edit").val("");
+      $("#apellidos_edit").val("");
+      $("#dni_edit").val("");
+      $("#correo_edit").val("");
+      $("#celular_edit").val("");
+      $("#modalEditar").modal("hide");
     },
     error: function () {
       SnackBar({
@@ -237,58 +282,35 @@ function editarMesa() {
   });
 }
 
-//Cargar datos al modal
-function obtenerMesaId(id) {
+// Read ID
+function obtenerExpedienteId(id) {
   $.ajax({
     type: "POST",
     url: "../model/Mexpediente.php",
     data: {
-      obtmesaid: 1,
-      idmesa: id,
+      obtenerId: 1,
+      id: id,
     },
     dataType: "json",
     success: function (response) {
-      $("#ideditarmesa").val(response.id);
-      $("#enomMesa").val(response.num);
-      if (response.id != 1) {
-        if (response.est == 1) {
-          estado = ` <label class="pt-1 pe-2">Estado: </label><span class="badge badge-sm bg-gradient-success">Disponible</span>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="amante">
-              <label class="custom-control-label" for="customCheck1">Pasar a mantenimiento</label>
-            </div>
-            `;
-        }
-      } else {
-        if (response.est == 1) {
-          estado =
-            '<label class="pt-1 pe-2">Estado: </label><span class="badge badge-sm bg-gradient-success">Disponible</span>';
-        }
-      }
-      if (response.est == 2) {
-        estado =
-          '<label class="pt-1 pe-2">Estado: </label><span class="badge badge-sm bg-gradient-danger">Ocupado</span>';
-      }
-      if (response.est == 3) {
-        estado =
-          '<label class="pt-1 pe-2">Estado: </label><span class="badge badge-sm bg-gradient-warning">Procesando</span>';
-      }
-      if (response.est == 4) {
-        estado = `<label class="pt-1 pe-2">Estado: </label><span class="badge badge-sm bg-gradient-secondary">Mantenimiento</span>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="adisponible">
-            <label class="custom-control-label" for="customCheck1">Pasar a disponible</label>
-          </div>
-          `;
-      }
-      $("#stdoMesa").html(estado);
-      $("#ecantidadMesa").val(response.can);
-      $("#eambienteMesa").val(response.amb);
-      $("#editarMesa").modal("show");
+      $("#id").val(response[0].id);
+      $("#asunto_edit").val(response[0].asunto);
+      $("#cantidad_doc_edit").val(response[0].cantidad_doc);
+      $("#num_folios_edit").val(response[0].num_folios);
+      $("#tramite_edit").val(response[0].tramite);
+      $("#doc_adjunto_edit").val(response[0].doc_adjunto);
+      $("#tramitante_id").val(response[0].tramitante_id);
+      $("#nombres_edit").val(response[0].nombres);
+      $("#apellidos_edit").val(response[0].apellidos);
+      $("#dni_edit").val(response[0].dni);
+      $("#correo_edit").val(response[0].correo);
+      $("#celular_edit").val(response[0].celular);
+      $("#modalEditar").modal("show");
     },
-    error: function () {
+    error: function (error) {
+      console.log(error);
       SnackBar({
-        message: "No se pudo obtener datos de la mesa",
+        message: "No se pudo obtener los datos",
         position: "tr",
         fixed: true,
         status: "danger",
@@ -299,5 +321,356 @@ function obtenerMesaId(id) {
 }
 
 $(document).ready(function () {
-  cargarDetalleMesas();
+  cargarExpedientes();
+  cargarComboAreas();
+  new DataTable("#tablaExpedientes");
 });
+
+// Mas metodos
+
+function mostrarModal() {
+  $("#modalNuevo").modal("show");
+}
+
+function modalMovimiento(id) {
+  const fechaActual = new Date();
+  const opcionesFecha = {
+    timeZone: "America/Lima",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+  const fechaFormateada = fechaActual.toLocaleString("es-PE", opcionesFecha);
+  $("#fecha").val(fechaFormateada);
+  $("#id_expediente").val(id);
+  $.ajax({
+    type: "POST",
+    url: "../model/Mexpediente.php",
+    data: {
+      consultaMovimiento: 1,
+      id: id,
+    },
+    dataType: "json",
+    success: function (response) {
+      let id_rol = $("#id_rol").val();
+      if (id_rol != 3) {
+        document.getElementById("remitente").classList.remove("d-none");
+        $("#area_remitente").text(response[0].area);
+        $("#trabajador").text(response[0].trabajador);
+        $("#ultima_fecha").text(response[0].fecha);
+        $("#docsfolios").text(
+          response[0].cantidad_doc + "/" + response[0].num_folios
+        );
+        $("#observacion").text(response[0].observacion);
+        $("#id_trabajador").val(response[0].usuario_id);
+      }
+      $("#modalMovimiento").modal("show");
+    },
+    error: function (error) {
+      console.log(error);
+      SnackBar({
+        message: "No se pudo obtener los datos",
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+    },
+  });
+}
+
+function realizarMovimiento() {
+  let camposVacios = [$("#usuario"), $("#observacion_movimiento")];
+
+  for (let i = 0; i < camposVacios.length; i++) {
+    if (camposVacios[i].val().length < 1) {
+      SnackBar({
+        message: "El campo es requerido",
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+      camposVacios[i].focus();
+      return false;
+    }
+  }
+
+  let usuario = $("#usuario").val();
+  let observacion_movimiento = $("#observacion_movimiento").val();
+  let id_expediente = $("#id_expediente").val();
+  let fecha = $("#fecha").val();
+
+  $.ajax({
+    url: "../model/Mexpediente.php",
+    type: "POST",
+    dataType: "html",
+    data: {
+      registrarMovimiento: 1,
+      usuario: usuario,
+      observacion_movimiento: observacion_movimiento,
+      id_expediente: id_expediente,
+      fecha: fecha,
+    },
+    success: function (response) {
+      SnackBar({
+        message: response,
+        position: "tr",
+        fixed: true,
+        status: "success",
+        timeout: 4500,
+      });
+      cargarExpedientes();
+      $("#modalMovimiento").modal("hide");
+      $("#usuario").val("");
+      $("#observacion_movimiento").val("");
+      $("#id_expediente").val("");
+    },
+    error: function () {
+      SnackBar({
+        message: "Error al Agregar",
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+    },
+  });
+}
+
+function mostrarOpcion() {
+  let estado = document.getElementById("estado").value;
+  let finalizar = document.getElementById("finalizar");
+  let enviar = document.getElementById("enviar");
+  if (estado == 1) {
+    enviar.classList.remove("hidden");
+  } else {
+    finalizar.classList.remove("hidden");
+  }
+}
+
+function cargarUsuarios() {
+  var area_id = $("#area").val();
+  var id_usuario = $("#id_usuario").val();
+
+  $.ajax({
+    type: "POST",
+    url: "../model/Mexpediente.php",
+    data: {
+      comboUsuario: 1,
+      area_id: area_id,
+    },
+    dataType: "json",
+    success: function (response) {
+      $("#usuario").empty();
+      response.forEach((dato) => {
+        if (dato.id != id_usuario) {
+          $("#usuario").append(
+            '<option value="' +
+              dato.id +
+              '">' +
+              dato.nom +
+              "(" +
+              dato.car +
+              ")</option>"
+          );
+        }
+      });
+    },
+    error: function (error) {
+      SnackBar({
+        message: error,
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+    },
+  });
+}
+
+function cargarComboAreas() {
+  $.ajax({
+    type: "POST",
+    url: "../model/Mexpediente.php",
+    data: {
+      comboArea: 1,
+    },
+    dataType: "json",
+    success: function (response) {
+      $("#area").empty();
+      response.forEach((dato) => {
+        $("#area").append(
+          '<option value="' + dato.id + '">' + dato.nom + "</option>"
+        );
+      });
+    },
+    error: function (error) {
+      SnackBar({
+        message: error,
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+    },
+  });
+}
+
+function realizarEnvio() {
+  let camposVacios = [$("#usuario"), $("#observacion_movimiento")];
+
+  for (let i = 0; i < camposVacios.length; i++) {
+    if (camposVacios[i].val().length < 1) {
+      SnackBar({
+        message: "El campo es requerido",
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+      camposVacios[i].focus();
+      return false;
+    }
+  }
+
+  let usuario = $("#usuario").val();
+  let observacion_movimiento = $("#observacion_movimiento").val();
+  let id_expediente = $("#id_expediente").val();
+  let id_trabajador = $("#id_trabajador").val();
+  let fecha = $("#fecha").val();
+
+  $.ajax({
+    url: "../model/Mexpediente.php",
+    type: "POST",
+    dataType: "html",
+    data: {
+      realizarMovimiento: 1,
+      usuario: usuario,
+      observacion_movimiento: observacion_movimiento,
+      id_expediente: id_expediente,
+      id_trabajador: id_trabajador,
+      fecha: fecha,
+    },
+    success: function (response) {
+      SnackBar({
+        message: response,
+        position: "tr",
+        fixed: true,
+        status: "success",
+        timeout: 4500,
+      });
+      cargarExpedientes();
+      $("#modalMovimiento").modal("hide");
+      $("#usuario").val("");
+      $("#observacion_movimiento").val("");
+      $("#id_expediente").val("");
+    },
+    error: function () {
+      SnackBar({
+        message: "Error al Agregar",
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+    },
+  });
+}
+
+function finalizarTramite() {
+  swal({
+    title: "Esta seguro de finalizar este tramite",
+    text: "Se enviara al creador del tramite como finalizado",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willDelete) => {
+    if (willDelete) {
+
+      let observacion_movimiento = $("#observacion_movimiento").val();
+      let id_expediente = $("#id_expediente").val();
+      let id_trabajador = $("#id_trabajador").val();
+      let fecha = $("#fecha").val();
+      $.ajax({
+        url: "../model/Mexpediente.php",
+        type: "POST",
+        dataType: "html",
+        data: {
+          finalizarMovimiento: 1,
+          observacion_movimiento: observacion_movimiento,
+          id_expediente: id_expediente,
+          id_trabajador: id_trabajador,
+          fecha: fecha,
+        },
+        success: function (response) {
+          SnackBar({
+            message: response,
+            position: "tr",
+            fixed: true,
+            status: "success",
+            timeout: 4500,
+          });
+          cargarExpedientes();
+          $("#modalMovimiento").modal("hide");
+          $("#observacion_movimiento").val("");
+          $("#id_expediente").val("");
+        },
+        error: function () {
+          SnackBar({
+            message: "Error al Agregar",
+            position: "tr",
+            fixed: true,
+            status: "danger",
+            timeout: 4500,
+          });
+        },
+      });
+    }
+  });
+}
+function finalizarTramiteMP() {
+  swal({
+    title: "Esta seguro de finalizar este tramite",
+    text: "No se enviara a nadie",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willDelete) => {
+    if (willDelete) {
+      let id_expediente = $("#id_expediente").val();
+      $.ajax({
+        url: "../model/Mexpediente.php",
+        type: "POST",
+        dataType: "html",
+        data: {
+          finalizarTramiteMPP: 1,
+          id_expediente: id_expediente,
+        },
+        success: function (response) {
+          SnackBar({
+            message: response,
+            position: "tr",
+            fixed: true,
+            status: "success",
+            timeout: 4500,
+          });
+          cargarExpedientes();
+          $("#modalMovimiento").modal("hide");
+        },
+        error: function () {
+          SnackBar({
+            message: "Error al modificar",
+            position: "tr",
+            fixed: true,
+            status: "danger",
+            timeout: 4500,
+          });
+        },
+      });
+    }
+  });
+}
