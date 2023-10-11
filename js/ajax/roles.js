@@ -3,6 +3,7 @@ function cargarRoles() {
   $.ajax({
     type: "POST",
     url: "../model/Mroles.php",
+    async: false,
     data: {
       data: 1,
     },

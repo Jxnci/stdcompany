@@ -3,6 +3,7 @@ function cargarCargos() {
   $.ajax({
     type: "POST",
     url: "../model/Mcargo.php",
+    async: false,
     data: {
       data: 1,
     },

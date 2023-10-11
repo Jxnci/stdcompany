@@ -3,6 +3,7 @@ function cargarExpedientes() {
   $.ajax({
     type: "POST",
     url: "../model/Mexpediente.php",
+    async: false,
     data: {
       dataexpediente: 1,
     },
@@ -59,13 +60,13 @@ function cargarExpedientes() {
         }
 
         contenido += `<tr>
-        <td>${dato.id}</td>
-        <td>${dato.num}</td>
-        <td>${dato.asu}</td>
-        <td>${dato.fec}</td>
-        <td>${estado}</td>
-        <td>${acciones}</td>
-      </tr>`;
+                        <td>${dato.id}</td>
+                        <td>${dato.num}</td>
+                        <td>${dato.asu}</td>
+                        <td>${dato.fec}</td>
+                        <td>${estado}</td>
+                        <td>${acciones}</td>
+                      </tr>`;
       });
 
       $("#data_expediente_contenido").html(contenido);
@@ -322,8 +323,7 @@ function obtenerExpedienteId(id) {
 
 $(document).ready(function () {
   cargarExpedientes();
-  cargarComboAreas();
-  new DataTable("#tablaExpedientes");
+  cargarComboAreas(); 
 });
 
 // Metodos manejo de movimientos

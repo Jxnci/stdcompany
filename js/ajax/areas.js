@@ -3,6 +3,7 @@ function cargarAreas() {
   $.ajax({
     type: "POST",
     url: "../model/Marea.php",
+    async: false,
     data: {
       data: 1,
     },

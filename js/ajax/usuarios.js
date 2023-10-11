@@ -3,6 +3,7 @@ function cargarUsuarios() {
   $.ajax({
     type: "POST",
     url: "../model/Musuarios.php",
+    async: false,
     data: {
       data: 1,
     },

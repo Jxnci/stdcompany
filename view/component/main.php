@@ -314,7 +314,25 @@
 <!-- JS -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="../js/ajax/expediente.js"></script>
+<script>
 
-<!-- Manejo de pdf -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-<script src="../js/functions/pdf.js"></script> -->
+$(document).ready(function () {
+  $("#tablaExpedientes").DataTable({
+    "order": [[ 0, "desc" ]],
+    "responsive": true,
+    "lengthChange": true,
+    "autoWidth": false,
+    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+  }).buttons().container().appendTo('#tablaExpedientes_wrapper .col-md-6:eq(0)');
+  $('#botonestablaExpedientes').DataTable({
+    "paging": true,
+    "lengthChange": false,
+    "searching": false,
+    "ordering": true,
+    "info": true,
+    "autoWidth": false,
+    "responsive": true,
+  });
+});
+
+</script>

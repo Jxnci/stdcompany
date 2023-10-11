@@ -12,15 +12,17 @@ require("../controller/controller.php");
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>STD - <?= $_SESSION['empresa']; ?></title>
-  <!-- <link rel="shortcut icon" href="../images/<?= $_SESSION['logo']; ?>" type="image/x-icon"> -->
+  <link rel="shortcut icon" href="../images/<?= $_SESSION['logo']; ?>" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <!-- Libreria notificaciones -->
-  <link ref="stylesheet" type="text/css" href="../dist/snackbar.min.css">
   <!-- Libreria para datatables -->
-  <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/r-2.5.0/datatables.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../dist/datatables/datatables.min.css">
+  <!-- <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/r-2.5.0/datatables.min.css" rel="stylesheet"> -->
   <!-- Estilos Personalizados -->
   <link rel="stylesheet" href="../css/styles.css">
+  <!-- Toast JS -->
+  <!-- <link ref="stylesheet" type="text/css" href="../dist/snackbar.min.css"> -->
+  <link rel="stylesheet" href="../dist/snackbar.min.css" media="screen" title="no title" charset="utf-8">
 </head>
 
 <body class="m-4 mt-3 bg-deep">
@@ -61,9 +63,7 @@ require("../controller/controller.php");
 <!-- Libreria JQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <!-- Libreria para datatable -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/r-2.5.0/datatables.min.js"></script>
+<script src="../dist/datatables/datatables.min.js"></script>
 <!-- Libreria notificaciones -->
 <script src="../dist/snackbar.min.js"></script>
 
