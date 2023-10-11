@@ -13,9 +13,9 @@ class Expediente {
     $role = $_SESSION['id_rol'];
     $datos = array();
     if ($role == 3) {
-      $query = "SELECT * FROM v_expedientesMD ORDER BY estado ASC;";
+      $query = "SELECT * FROM v_expedientesMD ORDER BY estado ASC, id DESC;";
     } else {
-      $query = "SELECT * FROM v_expedientes WHERE usuario_id=$usuario_id ORDER BY estado ASC;";
+      $query = "SELECT * FROM v_expedientes WHERE usuario_id=$usuario_id ORDER BY estado ASC, id DESC;";
     }
     $this->consulta = mysqli_query($this->db, $query);
     while ($row = mysqli_fetch_assoc($this->consulta)) {
@@ -239,19 +239,24 @@ if (isset($_POST['comboUsuario'])) {
 
 if (isset($_POST['consultaMovimiento'])) {
   $id = mysqli_real_escape_string($db, $_POST['id']);
-  $query = mysqli_query($db, "SELECT * FROM v_movimientoAnterior WHERE expediente_id=$id AND estado=1;");
-  while ($datos = mysqli_fetch_array($query)) {
-    $resultados[] = $datos;
-  }
+  $query = mysqli_query($db, "SELECT * FROM v_movimientoAnterior WHERE expediente_id=$id;");
   $cantidad = mysqli_num_rows($query);
-  if ($cantidad < 1) {
+  if ($cantidad < 2) {
     $resultados = [];
     $query1 = mysqli_query($db, "SELECT * FROM v_expedienteAnterior WHERE expediente_id=$id;");
     while ($datos1 = mysqli_fetch_array($query1)) {
       $resultados[] = $datos1;
     }
+  }else{
+    $query = mysqli_query($db, "SELECT * FROM v_movimientoAnterior WHERE expediente_id=$id ORDER BY fecha ASC LIMIT 1;");
+    $queryobs = mysqli_query($db, "SELECT observacion FROM movimiento WHERE expediente_id=$id AND estado=1;");
+    $resultado = mysqli_fetch_assoc($queryobs);
+    $observacion = $resultado['observacion'];
+    while ($datos = mysqli_fetch_array($query)) {
+      $datos['observacion'] = $observacion;
+      $resultados[] = $datos;
+    }
   }
-
   echo json_encode($resultados);
 }
 
@@ -259,6 +264,7 @@ if (isset($_POST['realizarMovimiento'])) {
   $usuario = mysqli_real_escape_string($db, $_POST['usuario']);
   $observacion_movimiento = mysqli_real_escape_string($db, $_POST['observacion_movimiento']);
   $id_expediente = mysqli_real_escape_string($db, $_POST['id_expediente']);
+  $id_usuario = mysqli_real_escape_string($db, $_POST['id_usuario']);
   $id_trabajador = mysqli_real_escape_string($db, $_POST['id_trabajador']);
   $fecha = mysqli_real_escape_string($db, $_POST['fecha']);
   $fechaObjeto = DateTime::createFromFormat("d/m/Y, H:i:s", $fecha);
@@ -275,7 +281,7 @@ if (isset($_POST['realizarMovimiento'])) {
       exit(mysqli_error($db));
       echo mysqli_error($db);
     } else {
-      $query3 = "UPDATE movimiento SET estado='2' WHERE expediente_id = '$id_expediente' AND usuario_id=$id_trabajador;";
+      $query3 = "UPDATE movimiento SET estado='2' WHERE expediente_id = '$id_expediente' AND usuario_id='$id_usuario';";
       if (!mysqli_query($db, $query3)) {
         exit(mysqli_error($db));
         echo mysqli_error($db);
@@ -296,6 +302,7 @@ if (isset($_POST['finalizarTramiteMPP'])) {
     echo 'Expediente enviado!';
   }
 }
+
 if (isset($_POST['finalizarMovimiento'])) {
   $id_expediente = mysqli_real_escape_string($db, $_POST['id_expediente']);
   $query = "UPDATE expediente SET estado='3' WHERE id = '$id_expediente'";
@@ -310,6 +317,7 @@ if (isset($_POST['finalizarMovimiento'])) {
     $observacion_movimiento = mysqli_real_escape_string($db, $_POST['observacion_movimiento']);
     $id_expediente = mysqli_real_escape_string($db, $_POST['id_expediente']);
     $id_trabajador = mysqli_real_escape_string($db, $_POST['id_trabajador']);
+    $id_usuario = mysqli_real_escape_string($db, $_POST['id_usuario']);
     $fecha = mysqli_real_escape_string($db, $_POST['fecha']);
     $fechaObjeto = DateTime::createFromFormat("d/m/Y, H:i:s", $fecha);
     $fechaFormateada = $fechaObjeto->format("Y-m-d H:i:s");
@@ -320,7 +328,7 @@ if (isset($_POST['finalizarMovimiento'])) {
       exit(mysqli_error($db));
       echo mysqli_error($db);
     } else {
-      $query3 = "UPDATE movimiento SET estado='2' WHERE expediente_id = '$id_expediente' AND usuario_id=$id_trabajador;";
+      $query3 = "UPDATE movimiento SET estado='2' WHERE expediente_id = '$id_expediente' AND usuario_id='$id_usuario';";
       if (!mysqli_query($db, $query3)) {
         exit(mysqli_error($db));
         echo mysqli_error($db);
@@ -329,4 +337,19 @@ if (isset($_POST['finalizarMovimiento'])) {
       }
     }
   }
+}
+
+
+if (isset($_POST['dataDocs'])) {
+
+  $datos = array();
+  $id_expediente = mysqli_real_escape_string($db, $_POST['id_expediente']);
+  $query = mysqli_query($db, "SELECT * FROM docs WHERE expediente_id='$id_expediente';");
+  while ($row = mysqli_fetch_assoc($query)) {
+    $data['id'] = $row['id'];
+    $data['nom'] = $row['ruta'];
+    array_push($datos, $data);
+  }
+  echo json_encode($datos);
+
 }

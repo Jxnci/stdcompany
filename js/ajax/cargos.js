@@ -16,8 +16,6 @@ function cargarCargos() {
         <td>${dato.nom}</td>
         <td>${dato.area}</td>
         <td>
-        <a onclick="eliminarCargo('${dato.id}')" class="badge bg-danger">
-          <i class="fas fa-trash-alt p-1"></i></a>
         <a onclick="obtenerCargoId('${dato.id}')" class="badge bg-warning">
           <i class="fas fa-edit p-1"></i></a>
         </td>
@@ -72,48 +70,6 @@ function agregarArea() {
         timeout: 4500,
       });
     },
-  });
-}
-
-// Delete
-function eliminarCargo(id) {
-  swal({
-    title: "Se eliminara el cargo",
-    text: "Accion no reversible",
-    icon: "warning",
-    buttons: true,
-    dangerMode: true,
-  }).then((willDelete) => {
-    if (willDelete) {
-      $.ajax({
-        type: "POST",
-        url: "../model/Mcargo.php",
-        data: {
-          eliminar: 1,
-          id: id,
-        },
-        dataType: "html",
-        success: function (response) {
-          SnackBar({
-            message: response,
-            position: "tr",
-            fixed: true,
-            status: "success",
-            timeout: 4500,
-          });
-          cargarCargos();
-        },
-        error: function (X) {
-          SnackBar({
-            message: "No se puede eliminar",
-            position: "tr",
-            fixed: true,
-            status: "danger",
-            timeout: 4500,
-          });
-        },
-      });
-    }
   });
 }
 

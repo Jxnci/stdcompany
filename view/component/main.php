@@ -223,26 +223,28 @@
           <input type="text" id="id_rol" value="<?= $_SESSION['id_rol'] ?>" hidden>
           <input type="text" id="id_expediente" hidden>
           <input type="text" id="id_trabajador" hidden>
-          <input type="text" class="text-end border-0 style-none" id="fecha" readonly onfocus="false">
+          <div class="d-flex justify-content-between">
+            <button onclick="adjuntardocs()" class="btn btn-primary py-1 px-3">Adjuntar documentos</button>
+            <input type="text" class="text-end border-0 style-none" id="fecha" readonly onfocus="false">
+          </div>
         </div>
-
       </div>
       <div class="modal-footer d-flex justify-content-between">
-      <?php
-          if ($_SESSION['id_rol'] == 3) {
-            echo '<button type="button" class="btn btn-danger p-2 px-3 shadow-secondary" onclick="finalizarTramiteMP()">Finalizar Tramite</button>';
-          }else {
-            echo '<button type="button" class="btn btn-danger p-2 px-3 shadow-secondary" onclick="finalizarTramite()">Finalizar Tramite</button>';
-          }
-          ?>
-        
+        <?php
+        if ($_SESSION['id_rol'] == 3) {
+          echo '<button type="button" class="btn btn-danger p-2 px-3 shadow-secondary" onclick="finalizarTramiteMP()">Finalizar Tramite</button>';
+        } else {
+          echo '<button type="button" class="btn btn-danger p-2 px-3 shadow-secondary" onclick="finalizarTramite()">Finalizar Tramite</button>';
+        }
+        ?>
+
         <div>
           <button type="button" class="btn btn-secondary p-2 px-3 shadow-secondary" data-bs-dismiss="modal">Cancelar</button>
 
           <?php
           if ($_SESSION['id_rol'] == 3) {
             echo '<button type="button" class="btn btn-success p-2 px-3" onclick="realizarMovimiento()">Enviar</button>';
-          }else {
+          } else {
             echo '<button type="button" class="btn btn-success p-2 px-3" onclick="realizarEnvio()">Realizar Envio</button>';
           }
           ?>
@@ -251,6 +253,55 @@
     </div>
   </div>
 </div>
+
+<div class="modal modal-lg fade" tabindex="-1" id="modalDocs">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-deep-gradient text-white">
+        <h5 class="modal-title font-weight-normal">Documentos Subidos</h5>
+        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <div class="modal-body bg-deep">
+        <div class="row g-3 m-2 p-2 bg-white shadow-sm border rounded">
+          <div class="col-md-8">
+            <label for="usuario" class="form-label">Selecciona un Documento</label>
+            <div class="input-group mb-3 border rounded">
+              <input type="file" class="form-control" id="pdfFile" name="pdfFile">
+            </div>
+
+          </div>
+          <div class="col-md-4 d-flex align-items-end mb-3">
+            <button onclick="subirPDF()" class="btn btn-primary align-items-end">Subir PDF</button>
+          </div>
+        </div>
+
+        <div class="row g-3 m-2 mt-4 bg-white p-2 shadow-sm border rounded">
+          <h6>Documentos subidos</h6>
+          <table class="table align-items-center mb-0 table-bordered table-striped" style="width:100%">
+            <thead>
+              <tr>
+                <th>##</th>
+                <th>Documento</th>
+                <th>Descargar</th>
+              </tr>
+            </thead>
+            <tbody id="dataDocs">
+
+            </tbody>
+          </table>
+
+        </div>
+
+        <input type="text" id="id_exp" hidden>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary p-2 px-3" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Styles -->
 <style>

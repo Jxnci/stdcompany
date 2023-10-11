@@ -326,7 +326,7 @@ $(document).ready(function () {
   new DataTable("#tablaExpedientes");
 });
 
-// Mas metodos
+// Metodos manejo de movimientos
 
 function mostrarModal() {
   $("#modalNuevo").modal("show");
@@ -540,8 +540,14 @@ function realizarEnvio() {
   let usuario = $("#usuario").val();
   let observacion_movimiento = $("#observacion_movimiento").val();
   let id_expediente = $("#id_expediente").val();
+  let id_usuario = $("#id_usuario").val();
   let id_trabajador = $("#id_trabajador").val();
   let fecha = $("#fecha").val();
+  console.log("usuario" + usuario);
+  console.log("observacion_movimiento" + observacion_movimiento);
+  console.log("id_expediente" + id_expediente);
+  console.log("id_usuario" + id_usuario);
+  console.log("id_trabajador" + id_trabajador);
 
   $.ajax({
     url: "../model/Mexpediente.php",
@@ -552,6 +558,7 @@ function realizarEnvio() {
       usuario: usuario,
       observacion_movimiento: observacion_movimiento,
       id_expediente: id_expediente,
+      id_usuario: id_usuario,
       id_trabajador: id_trabajador,
       fecha: fecha,
     },
@@ -590,11 +597,11 @@ function finalizarTramite() {
     dangerMode: true,
   }).then((willDelete) => {
     if (willDelete) {
-
       let observacion_movimiento = $("#observacion_movimiento").val();
       let id_expediente = $("#id_expediente").val();
       let id_trabajador = $("#id_trabajador").val();
       let fecha = $("#fecha").val();
+      let id_usuario = $("#id_usuario").val();
       $.ajax({
         url: "../model/Mexpediente.php",
         type: "POST",
@@ -605,6 +612,7 @@ function finalizarTramite() {
           id_expediente: id_expediente,
           id_trabajador: id_trabajador,
           fecha: fecha,
+          id_usuario: id_usuario,
         },
         success: function (response) {
           SnackBar({
@@ -672,5 +680,74 @@ function finalizarTramiteMP() {
         },
       });
     }
+  });
+}
+
+// Subir PDf
+function adjuntardocs() {
+  $("#modalDocs").modal("show");
+  $("#id_exp").val($("#id_expediente").val());
+  dataDocs();
+}
+
+function dataDocs() {
+  let id_expediente = $("#id_exp").val();
+  $.ajax({
+    type: "POST",
+    url: "../model/Mexpediente.php",
+    data: {
+      dataDocs: 1,
+      id_expediente: id_expediente,
+    },
+    dataType: "text",
+    success: function (response) {
+      console.log(response);
+      let contenido = "";
+      let datos = JSON.parse(response);
+      datos.forEach((dato) => {
+        contenido += `<tr>
+          <td>${dato.id}</td>
+          <td>${dato.nom}</td>
+          <td><a href="../docs/${dato.nom}" class="btn btn-danger" download>Descargar PDF</a>
+          <a href="../docs/${dato.nom}" class="btn btn-success" target="_blanck">Ver PDF</a></td>
+        </tr>`;
+      });
+
+      $("#dataDocs").html(contenido);
+    },
+    error: function (X) {
+      SnackBar({
+        message: "No se pudo cargar los datos",
+        position: "tr",
+        fixed: true,
+        status: "danger",
+        timeout: 4500,
+      });
+    },
+  });
+}
+
+function subirPDF() {
+  var fileData = $("#pdfFile").prop("files")[0];
+  let id_expediente = $("#id_exp").val();
+  var formData = new FormData();
+  formData.append("pdfFile", fileData);
+  formData.append("id_expediente", id_expediente);
+
+  $.ajax({
+    url: "../model/Mpdf.php",
+    type: "POST",
+    data: formData,
+    contentType: false,
+    processData: false,
+    success: function (response) {
+      console.log(response);
+      alert("PDF subido correctamente.");
+      dataDocs();
+    },
+    error: function (xhr, status, error) {
+      console.log(xhr.responseText);
+      alert("Error al subir el PDF.");
+    },
   });
 }

@@ -4,10 +4,7 @@ $active = isset($_GET["ventana"]) ? $_GET["ventana"] : '';
 
 <div class="container-fluid">
   <a class="navbar-brand text-white <?= $active == 'inicio' ? 'active' : '' ?>" href="panel.php?ventana=inicio">
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#ffffff" class="mb-1">
-      <path d="M17 5c-1.961 0-3.731.809-5.002 2.108-1.27-1.299-3.038-2.108-4.998-2.108-3.866 0-7 3.134-7 7s3.134 7 7 7c1.96 0 3.728-.809 4.998-2.108 1.271 1.299 3.041 2.108 5.002 2.108 3.866 0 7-3.134 7-7s-3.134-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z" />
-    </svg>
-    <!-- <img src="../images/<?= $_SESSION['logo'] ?>" alt="Logo" width="24" height="24" class="d-inline-block align-text-top"> -->
+    <img src="../images/<?= $_SESSION['logo'] ?>" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
     <?= strtoupper($_SESSION['empresa']) ?>
   </a>
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,17 +71,19 @@ $active = isset($_GET["ventana"]) ? $_GET["ventana"] : '';
   }
   var dropdownToggle = document.querySelector('.dropdown-toggle');
   var dropdownMenu = document.querySelector('.dropdown-menu');
-  dropdownToggle.addEventListener('click', function() {
-    dropdownMenu.classList.toggle('show');
-  });
+  if (dropdownToggle) {
+    dropdownToggle.addEventListener('click', function() {
+      dropdownMenu.classList.toggle('show');
+    });
+    document.addEventListener('click', function(event) {
+      if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.remove('show');
+      }
+    });
+    dropdownToggle.addEventListener('click', function() {
+      var expanded = dropdownToggle.getAttribute('aria-expanded') === 'true' || false;
+      dropdownToggle.setAttribute('aria-expanded', !expanded);
+    });
+  }
 
-  document.addEventListener('click', function(event) {
-    if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
-      dropdownMenu.classList.remove('show');
-    }
-  });
-  dropdownToggle.addEventListener('click', function() {
-    var expanded = dropdownToggle.getAttribute('aria-expanded') === 'true' || false;
-    dropdownToggle.setAttribute('aria-expanded', !expanded);
-  });
 </script>

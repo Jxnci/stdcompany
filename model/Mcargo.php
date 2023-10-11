@@ -52,16 +52,6 @@ if (isset($_POST['agregar'])) {
   echo "Agregado correctamente";
 }
 
-if (isset($_POST['eliminar'])) {
-  $id = $_POST['id'];
-  $query =  "DELETE FROM cargo WHERE id = $id;";
-  if (!$result = mysqli_query($db, $query)) {
-    exit(mysqli_error($db));
-    echo mysqli_error($db);
-  }
-  echo "Se elimino correctamente";
-}
-
 if (isset($_POST['edit'])) {
   $id = mysqli_real_escape_string($db, $_POST['id']);
   $nom = mysqli_real_escape_string($db, $_POST['nom']);
